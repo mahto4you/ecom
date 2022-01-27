@@ -5,17 +5,20 @@ import loginfacebook from '../assets/images/login-facebook.png';
 import logingoogle from '../assets/images/login-google.png';
 import { loginDispatch } from '../reducers/UsersReducer';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const Login = () => {
 	const [data, setData] = useState({
 		email: '',
 		password: '',
 	});
 	const dispatch = useDispatch();
+	const [eye, setEye] = useState(false);
 	const history = useHistory();
 	const handleChange = (e) => {
 		setData({ [e.target.name]: [e.target.value] });
 	};
+	const { userInfo } = useSelector((state) => state.user);
 	const handleSubmit = (e) => {
 		// console.log(e.target[0].value);
 		e.preventDefault();
@@ -26,7 +29,11 @@ const Login = () => {
 			},
 		};
 		console.log(formData);
-		dispatch(loginDispatch(formData, history));
+		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(e.target[0].value)) {
+			alert('Invalid email');
+		} else {
+			dispatch(loginDispatch(formData));
+		}
 	};
 
 	return (
@@ -56,7 +63,7 @@ const Login = () => {
 											<div className='password-in'>
 												<input
 													id='password-field'
-													type='password'
+													type={eye ? 'text' : 'password'}
 													className='login-type'
 													name='password'
 													onChange={handleChange}
@@ -65,9 +72,17 @@ const Login = () => {
 													placeholder='password'
 												/>
 												<div className='clearfix'></div>
-												<span
-													toggle='#password-field'
-													className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												{eye ? (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye(false)}
+														className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												) : (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye(true)}
+														className='field-icon fa fa-eye-slash toggle-password'></span>
+												)}
 											</div>
 											<div className='remmber-area'>
 												<label className='list_checkBox'>
@@ -102,7 +117,7 @@ const Login = () => {
 								<div className='bottom-account-div'>
 									<p>
 										Don't have an account?{' '}
-										<a href='signup.html'>Create Account</a>
+										<Link to='/signup'>Create Account</Link>
 									</p>
 								</div>
 							</div>

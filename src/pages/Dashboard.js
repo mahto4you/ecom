@@ -14,18 +14,42 @@ import dashico8 from '../assets/images/dashico8.png';
 import dashico9 from '../assets/images/dashico9.png';
 import uplodimg from '../assets/images/uplodimg.jpg';
 import clickhe from '../assets/images/clickhe.png';
+import imageToBase64 from 'image-to-base64/browser';
 import { useDispatch, useSelector } from 'react-redux';
 import { editUserProfileDispatch } from '../reducers/UsersReducer';
 const Dashboard = () => {
 	const { userInfo } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
-	const [gender, setGender] = useState('');
+	// const fileInputRef = React.createRef();
+	const [gender, setGender] = useState(
+		userInfo &&
+			userInfo.result &&
+			userInfo.result.userdata &&
+			userInfo.result.userdata.gender
+	);
+	const [upload, setUpload] = useState('');
 	const handleGender1 = () => {
 		setGender('M');
 	};
 	const handleGender2 = () => {
 		setGender('F');
 	};
+	// const fileChange = (event) => {
+	// 	event.preventDefault();
+	// 	const fileToUpload = event.target.files;
+	// 	console.log(fileToUpload[0]);
+	// 	// setUpload(fileToUpload[0]);
+	// 	setUpload(URL.createObjectURL(fileToUpload[0]));
+	// 	imageToBase64(URL.createObjectURL(fileToUpload[0]))
+	// 		.then((response) => {
+	// 			// setUpload(`data:${fileToUpload['0'].type};base64,` + response); // "cGF0aC90by9maWxlLmpwZw=="
+	// 			setUpload(fileToUpload['0'].type); // "cGF0aC90by9maWxlLmpwZw=="
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error); // Logs an error if there was one
+	// 		});
+	// };
+	console.log(upload);
 	const [data, setData] = useState({
 		name:
 			userInfo &&
@@ -42,8 +66,27 @@ const Dashboard = () => {
 			userInfo.result &&
 			userInfo.result.userdata &&
 			userInfo.result.userdata.phone,
-		about_me: '',
+		about_me:
+			userInfo &&
+			userInfo.result &&
+			userInfo.result.userdata &&
+			userInfo.result.userdata.about_me,
+		date_of_birth:
+			userInfo &&
+			userInfo.result &&
+			userInfo.result.userdata &&
+			userInfo.result.userdata.date_of_birth,
 		password: '',
+		state:
+			userInfo &&
+			userInfo.result &&
+			userInfo.result.userdata &&
+			userInfo.result.userdata.state,
+		city:
+			userInfo &&
+			userInfo.result &&
+			userInfo.result.userdata &&
+			userInfo.result.userdata.city,
 		password_confirmation: '',
 	});
 
@@ -65,29 +108,51 @@ const Dashboard = () => {
 		// console.log(e);
 		// console.log(gender);
 		e.preventDefault();
-		let formData = {
-			params: {
-				name: e.target[0].value,
-				email: e.target[1].value,
-				phone: e.target[2].value,
-				gender: gender,
-				about_me: e.target[3].value,
-				date_of_birth: e.target[4].value,
-				country_id: 1,
-				state: e.target[14].value,
-				city: e.target[15].value,
-				password: e.target[16].value,
-				new_password: e.target[17].value,
-				confirm_password: e.target[18].value,
-			},
-		};
-		console.log(formData);
-		dispatch(
-			editUserProfileDispatch(
-				formData,
-				userInfo && userInfo.result && userInfo.result.token
-			)
-		);
+		const formDat = new FormData();
+		formDat.append('image', upload);
+		formDat.append('name', e.target[0].value);
+		formDat.append('email', e.target[1].value);
+		formDat.append('phone', e.target[2].value);
+		formDat.append('gender', gender);
+		formDat.append('about_me', e.target[3].value);
+		formDat.append('date_of_birth', e.target[4].value);
+		formDat.append('state', e.target[14].value);
+		formDat.append('city', e.target[15].value);
+		formDat.append('password', e.target[16].value);
+		formDat.append('new_password', e.target[17].value);
+		formDat.append('confirm_password', e.target[18].value);
+		// formDat.append('file', upload);
+		// formDat.append('file', upload);
+		// formDat.append('file', upload);
+		// formDat.append('file', upload);
+		// let formData = {
+		// 	// params: {
+		// 	name: e.target[0].value,
+		// 	email: e.target[1].value,
+		// 	phone: e.target[2].value,
+		// 	gender: gender,
+		// 	about_me: e.target[3].value,
+		// 	date_of_birth: e.target[4].value,
+		// 	country_id: 1,
+		// 	state: e.target[14].value,
+		// 	city: e.target[15].value,
+		// 	password: e.target[16].value,
+		// 	new_password: e.target[17].value,
+		// 	confirm_password: e.target[18].value,
+		// 	image: formDat,
+		// 	// },
+		// };
+		console.log(formDat);
+		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(e.target[1].value)) {
+			alert('Invalid email');
+		} else {
+			dispatch(
+				editUserProfileDispatch(
+					formDat,
+					userInfo && userInfo.result && userInfo.result.token
+				)
+			);
+		}
 	};
 	return (
 		<>
@@ -109,7 +174,17 @@ const Dashboard = () => {
 										<div className='dasbordLeft '>
 											<div className='profibx'>
 												<em>
-													<img src={dachprofi} alt='' />
+													<img
+														// src={
+														// 	'https://phpwebdevelopmentservices.com/project-react-backend/' +
+														// 		userInfo &&
+														// 	userInfo.result &&
+														// 	userInfo.result.userdata &&
+														// 	userInfo.result.userdata.image
+														// }
+														src={dachprofi}
+														alt=''
+													/>
 												</em>
 												<strong>Rabin Mnna</strong>
 												<ul>
@@ -310,9 +385,9 @@ const Dashboard = () => {
 																		type='date'
 																		className='datepicker'
 																		// placeholder='Enter here'
-																		name='date'
+																		name='date_of_birth'
 																		onChange={handleChange}
-																		value={data.date}
+																		value={data.date_of_birth}
 																	/>
 																</div>
 															</div>
@@ -327,8 +402,7 @@ const Dashboard = () => {
 																				id='radio1'
 																				name='male'
 																				onClick={handleGender1}
-																				// value={gender}
-																				checked={gender == 'M' ? true : false}
+																				checked={gender === 'M' ? true : false}
 																			/>
 																			<label for='radio1'>Male</label>
 																		</li>
@@ -338,7 +412,7 @@ const Dashboard = () => {
 																				id='radio2'
 																				name='female'
 																				onClick={handleGender2}
-																				checked={gender == 'F' ? true : false}
+																				checked={gender === 'F' ? true : false}
 																			/>
 																			<label for='radio2'>Female</label>
 																		</li>
@@ -355,7 +429,7 @@ const Dashboard = () => {
 																				Bus
 																				<input
 																					type='checkbox'
-																					checked=''
+																					checked={true}
 																					// name='text'
 																					name='bus'
 																					onChange={handleChange}
@@ -447,12 +521,19 @@ const Dashboard = () => {
 																	<span>Profile Image</span>
 																	<div className='uplodimgfil'>
 																		<input
+																			// ref={fileInputRef}
 																			type='file'
-																			name='file-1[]'
+																			accept='image/*'
+																			hidden
+																			onChange={(e) =>
+																				setUpload(e.target.files[0])
+																			}
+																			// onChange={fileChange}
+																			name='file'
 																			id='file-1'
 																			className='inputfile inputfile-1'
-																			data-multiple-caption='{count} files selected'
-																			multiple
+																			// data-multiple-caption='{count} files selected'
+																			// multiple
 																		/>
 																		<label for='file-1'>
 																			Click here to Upload Profile Image
@@ -519,8 +600,8 @@ const Dashboard = () => {
 																		<input
 																			type='password'
 																			placeholder='Enter here'
-																			name='current_password'
-																			value={data.current_password}
+																			name='password'
+																			value={data.password}
 																			onChange={handleChange}
 																		/>
 																	</div>

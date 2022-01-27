@@ -66,14 +66,17 @@ export const {
 	addNewUserFail,
 } = actions;
 
-export const loginDispatch = (bodyData, history) => async (dispatch) => {
+export const loginDispatch = (bodyData) => async (dispatch) => {
 	try {
 		dispatch(userLoginRequest());
 		const config = { headers: { 'Content-Type': 'application/json' } };
 		const { data } = await axiosInstance.post('/api/login', bodyData, config);
 		dispatch(userLoginSuccess(data));
-		// alert('Login Successfully');
-		history.push('/dashboard');
+		if (data.result) {
+			alert('Login Successfully');
+		} else {
+			alert('Invalid login credentials');
+		}
 	} catch (error) {
 		dispatch(
 			userLoginFail(
@@ -85,7 +88,7 @@ export const loginDispatch = (bodyData, history) => async (dispatch) => {
 	}
 };
 
-export const addNewUserDispatch = (bodyData) => async (dispatch) => {
+export const addNewUserDispatch = (bodyData, history) => async (dispatch) => {
 	try {
 		dispatch(addNewUserRequest());
 		const config = { headers: { 'Content-Type': 'application/json' } };
@@ -96,6 +99,7 @@ export const addNewUserDispatch = (bodyData) => async (dispatch) => {
 		);
 		dispatch(addNewUserSuccess(data));
 		alert('Signup Successfully');
+		history.push('/login');
 	} catch (error) {
 		dispatch(
 			addNewUserFail(
@@ -121,6 +125,7 @@ export const editUserProfileDispatch =
 				config
 			);
 			dispatch(editUserProfileSuccess(data));
+			alert('Profile Update Successfully');
 		} catch (error) {
 			dispatch(
 				editUserProfileFail(

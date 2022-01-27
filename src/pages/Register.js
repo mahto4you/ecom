@@ -5,8 +5,10 @@ import loginfacebook from '../assets/images/login-facebook.png';
 import logingoogle from '../assets/images/login-google.png';
 import { addNewUserDispatch } from '../reducers/UsersReducer';
 import { useDispatch } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 const Register = () => {
 	const dispatch = useDispatch();
+	const history = useHistory();
 	const [data, setData] = useState({
 		name: '',
 		email: '',
@@ -14,6 +16,8 @@ const Register = () => {
 		password: '',
 		password_confirmation: '',
 	});
+	const [eye, setEye] = useState(false);
+	const [eye2, setEye2] = useState(false);
 
 	const handleChange = (e) => {
 		setData({ [e.target.name]: [e.target.value] });
@@ -32,7 +36,13 @@ const Register = () => {
 		};
 		console.log(formData);
 		if (formData.params.password === formData.params.password_confirmation) {
-			dispatch(addNewUserDispatch(formData));
+			if (
+				!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(e.target[1].value)
+			) {
+				alert('Invalid email');
+			} else {
+				dispatch(addNewUserDispatch(formData, history));
+			}
 		} else {
 			alert('Password Mismatch');
 		}
@@ -91,7 +101,7 @@ const Register = () => {
 											<div className='password-in'>
 												<input
 													id='password-field'
-													type='password'
+													type={eye ? 'text' : 'password'}
 													className='login-type'
 													name='password'
 													onChange={handleChange}
@@ -100,14 +110,22 @@ const Register = () => {
 													required
 												/>
 												<div className='clearfix'></div>
-												<span
-													toggle='#password-field'
-													className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												{eye ? (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye(false)}
+														className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												) : (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye(true)}
+														className='field-icon fa fa-eye-slash toggle-password'></span>
+												)}
 											</div>
 											<div className='password-in'>
 												<input
 													id='password-field'
-													type='password'
+													type={eye2 ? 'text' : 'password'}
 													className='login-type'
 													name='password_confirmation'
 													value={data.password_confirmation}
@@ -116,9 +134,17 @@ const Register = () => {
 													placeholder='Confirm password'
 												/>
 												<div className='clearfix'></div>
-												<span
-													toggle='#password-field'
-													className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												{eye2 ? (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye2(false)}
+														className='field-icon fa fa-fw fa-eye toggle-password'></span>
+												) : (
+													<span
+														toggle='#password-field'
+														onClick={() => setEye2(true)}
+														className='field-icon fa fa-eye-slash toggle-password'></span>
+												)}
 											</div>
 											<p>
 												By clicking Sign In or continue with Facebook or Google,
@@ -147,7 +173,7 @@ const Register = () => {
 								</div>
 								<div className='bottom-account-div'>
 									<p>
-										Already have an account? <a href='login.html'>Login</a>
+										Already have an account? <Link to='/login'>Login</Link>
 									</p>
 								</div>
 							</div>

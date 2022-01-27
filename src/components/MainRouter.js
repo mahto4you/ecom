@@ -1,5 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Redirect,
+} from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
@@ -7,6 +13,7 @@ import Product from '../pages/Product';
 import Register from '../pages/Register';
 
 const MainRouter = () => {
+	const { userInfo } = useSelector((state) => state.user);
 	return (
 		<div>
 			<Router>
@@ -18,7 +25,11 @@ const MainRouter = () => {
 						<Register />
 					</Route>
 					<Route exact path={'/login'}>
-						<Login />
+						{userInfo && userInfo.result ? (
+							<Redirect to='/dashboard'></Redirect>
+						) : (
+							<Login />
+						)}
 					</Route>
 					<Route exact path={'/dashboard'}>
 						<Dashboard />
