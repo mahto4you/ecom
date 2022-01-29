@@ -3,8 +3,10 @@ import icon04 from '../../assets/images/icon04.png';
 import icon03 from '../../assets/images/icon03.png';
 import icon02 from '../../assets/images/icon02.jpg';
 import logo from '../../assets/images/logo.png';
-
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const Header = () => {
+	const { userInfo } = useSelector((state) => state.user);
 	return (
 		<>
 			<header>
@@ -45,24 +47,55 @@ const Header = () => {
 						<div className='container'>
 							<div className='row res_padd'>
 								<span className='logo'>
-									<a href='index.html'>
+									<Link to='/'>
 										<img src={logo} alt='' />
-									</a>
+									</Link>
 								</span>
 								<div className='right_search ml-auto'>
-									<div className='left_search'>
-										<form>
-											<input
-												type='text'
-												className='search_type mobill010'
-												placeholder='Search for Products'
-											/>
-											<button
-												type='submit'
-												value=''
-												className='search_submit'></button>
-										</form>
-									</div>
+									{userInfo ? (
+										<div className='left_search'>
+											<form>
+												<input
+													type='text'
+													className='search_type mobill010'
+													placeholder='Search for Products'
+												/>
+												<button
+													type='submit'
+													value=''
+													className='search_submit'></button>
+											</form>
+										</div>
+									) : (
+										<>
+											<Link to='/login'>
+												<button
+													style={{
+														color: 'white',
+														borderRadius: '10px',
+														background: 'red',
+														cursor: 'pointer',
+														padding: '6px 12px',
+													}}>
+													Login
+												</button>
+											</Link>
+											<Link to='signup'>
+												<button
+													style={{
+														color: 'white',
+														cursor: 'pointer',
+
+														marginLeft: 10,
+														borderRadius: '10px',
+														background: 'red',
+														padding: '6px 12px',
+													}}>
+													Register
+												</button>
+											</Link>
+										</>
+									)}
 								</div>
 							</div>
 						</div>

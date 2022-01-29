@@ -17,6 +17,7 @@
 			rel="stylesheet"
 			media="all"
 		/>
+
 		<link
 			href="%PUBLIC_URL%/css/responsive.css"
 			type="text/css"
@@ -97,7 +98,25 @@
 			});
 		</script>
 		<!-- back to top -->
-
+		<script>
+			$(function () {
+				$('#slider-range').slider({
+					range: true,
+					min: 0,
+					max: 1000,
+					values: [10, 500],
+					slide: function (event, ui) {
+						$('#amount').val('Rs.' + ui.values[0] + ' - Rs.' + ui.values[1]);
+					},
+				});
+				$('#amount').val(
+					'Rs.' +
+						$('#slider-range').slider('values', 0) +
+						' - Rs.' +
+						$('#slider-range').slider('values', 1)
+				);
+			});
+		</script>
 		<script>
 			$(document).ready(function () {
 				$('#offer').owlCarousel({
@@ -175,6 +194,13 @@
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<link
+			rel="stylesheet"
+			href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+		/>
+
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 		<div id="root"></div>
 		<!--
       This HTML file is a template.
